@@ -91,13 +91,6 @@ function onGettingFile(f, item) {
     };
 
     var html = 'This file is in your browser cache. Click <a href="' + file.url + '" download="' + file.name + '">here</a> to download.';
-    if (item.php && item.youtube) {
-        html = 'Click to download file from <a href="' + item.php + '" target="_blank">Private Server</a> <img src="images/delete.png" class="cross-icon" title="Delete from server"> or <a href="' + item.youtube + '" target="_blank">YouTube</a>';
-    } else if (item.php) {
-        html = 'Click to download file from: <a href="' + item.php + '" target="_blank">' + item.php + '</a> <img src="images/cross-icon.png" class="cross-icon" title="Delete from server">';
-    } else if (item.youtube) {
-        html = 'Click to download file from: <a href="' + item.youtube + '" target="_blank">' + item.youtube + '</a>';
-    }
     browserCache.innerHTML = html;
     if (browserCache.querySelector('.cross-icon')) {
         browserCache.querySelector('.cross-icon').onclick = function() {
@@ -140,8 +133,6 @@ DiskStorage.GetLastSelectedFile(recentFile, function(file) {
                     found = {
                         name: item,
                         display: item,
-                        php: '',
-                        youtube: ''
                     };
                 }
             } else if (item.name === recentFile) {
@@ -243,10 +234,6 @@ document.querySelector('#btn-recordings-list').onclick = function(e) {
 };
 
 document.body.onclick = function() {
-    if (btnUploadDropDown.className === 'visible') {
-        btnUploadDropDown.className = '';
-    }
-
     if (btnRecordingsListDropDown.className === 'visible') {
         btnRecordingsListDropDown.className = '';
     }

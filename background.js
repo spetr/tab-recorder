@@ -167,8 +167,7 @@ function stopScreenRecording() {
 
             if (false && openPreviewOnStopRecording) {
                 chrome.storage.sync.set({
-                    isRecording: 'false', // for dropdown.js
-                    openPreviewPage: 'true' // for previewing recorded video
+                    isRecording: 'false' // for dropdown.js
                 }, function () {
                     // wait 100 milliseconds to make sure DiskStorage finished its job
                     setTimeout(function () {
@@ -201,30 +200,10 @@ function stopScreenRecording() {
             setBadgeText('');
 
             chrome.storage.sync.set({
-                isRecording: 'false',
-                openPreviewPage: 'false'
+                isRecording: 'false'
             });
 
-            openPreviewOnStopRecording && chrome.tabs.query({}, function (tabs) {
-                var found = false;
-                var url = 'chrome-extension://' + chrome.runtime.id + '/preview.html';
-                for (var i = tabs.length - 1; i >= 0; i--) {
-                    if (tabs[i].url === url) {
-                        found = true;
-                        chrome.tabs.update(tabs[i].id, {
-                            active: true,
-                            url: url
-                        });
-                        break;
-                    }
-                }
-                if (!found) {
-                    chrome.tabs.create({
-                        url: 'preview.html'
-                    });
-                }
-
-            });
+            openPreviewPage()
         });
     });
 }
@@ -301,14 +280,10 @@ function setBadgeText(text) {
 }
 
 
-false && chrome.storage.sync.get('openPreviewPage', function (item) {
-    if (item.openPreviewPage !== 'true') return;
-
+function openPreviewPage() {
     chrome.storage.sync.set({
-        isRecording: 'false',
-        openPreviewPage: 'false'
+        isRecording: 'false'
     });
-
     chrome.tabs.query({}, function (tabs) {
         var found = false;
         var url = 'chrome-extension://' + chrome.runtime.id + '/preview.html';
@@ -328,6 +303,4 @@ false && chrome.storage.sync.get('openPreviewPage', function (item) {
             });
         }
     });
-
-    // invokeSaveAsDialog(file, file.name);
-});
+};
