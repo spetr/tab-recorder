@@ -90,7 +90,7 @@ function onGettingFile(f, item) {
         video.play();
     };
 
-    var html = 'This file is in your browser cache. Click <a href="' + file.url + '" download="' + file.name + '">here</a> to download.';
+    var html = 'Click <a href="' + file.url + '" download="' + file.name + '">here</a> to download.';
     browserCache.innerHTML = html;
     if (browserCache.querySelector('.cross-icon')) {
         browserCache.querySelector('.cross-icon').onclick = function() {

@@ -71,7 +71,7 @@ function startScreenRecording() {
                 case 'VP8':
                     options.mimeType = 'video/webm\;codecs=vp8';
                     break;
-                case 'VP8':
+                case 'VP9':
                     options.mimeType = 'video/webm\;codecs=vp9';
                     break;
                 case 'H264':
@@ -115,19 +115,12 @@ function stopScreenRecording() {
     });
 
     recorder.stop(function onStopRecording(blob, ignoreGetSeekableBlob) {
-        if (fixVideoSeekingIssues && recorder && !ignoreGetSeekableBlob) {
-            getSeekableBlob(recorder.blob, function (seekableBlob) {
-                onStopRecording(seekableBlob, true);
-            });
-            return;
-        }
-
         var mimeType = '';
         var fileExtension = '';
 
         switch (videoCodec) {
             case 'VP8':
-            case 'VP8':
+            case 'VP9':
                 mimeType = 'video/webm';
                 fileExtension = 'webm'
                 break;
@@ -156,11 +149,6 @@ function stopScreenRecording() {
 
         localStorage.setItem('selected-file', file.name);
 
-        // initialTime = initialTime || Date.now();
-        // var timeDifference = Date.now() - initialTime;
-        // var formatted = convertTime(timeDifference);
-        // file.duration = formatted;
-
         DiskStorage.StoreFile(file, function (response) {
             try {
                 videoPlayers.forEach(function (player) {
@@ -169,23 +157,6 @@ function stopScreenRecording() {
                 videoPlayers = [];
             } catch (e) {}
 
-            if (false && openPreviewOnStopRecording) {
-                chrome.storage.sync.set({
-                    isRecording: 'false' // for dropdown.js
-                }, function () {
-                    // wait 100 milliseconds to make sure DiskStorage finished its job
-                    setTimeout(function () {
-                        chrome.runtime.reload();
-                    }, 100);
-                });
-                return;
-            }
-
-            false && setTimeout(function () {
-                chrome.runtime.reload();
-            }, 2000);
-
-            // -------------
             if (recorder && recorder.streams) {
                 recorder.streams.forEach(function (stream, idx) {
                     stream.getTracks().forEach(function (track) {

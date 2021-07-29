@@ -10,8 +10,6 @@ var videoCodec = 'H264'; // Default, VP8, VP9, H264, AV1,
 var openPreviewOnStopRecording = true;
 var openCameraPreviewDuringRecording = true;
 
-var fixVideoSeekingIssues = false;
-
 // used by RecordRTC
 var isChrome = true;
 
@@ -70,7 +68,7 @@ function getFileName(fileExtension) {
     if(date.length === 1) {
         date = '0' + date;
     }
-    return year + month + date + getRandomString() + '.' + fileExtension;
+    return year + '-' + month + '-' + date + '-' + getRandomString() + '.' + fileExtension;
 }
 
 function addStreamStopListener(stream, callback) {
