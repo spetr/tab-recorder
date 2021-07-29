@@ -193,7 +193,6 @@ function setBadgeText(text) {
 }
 
 function openPreviewPage() {
-
     chrome.tabs.query({}, function (tabs) {
         var url = 'chrome-extension://' + chrome.runtime.id + '/preview.html';
         for (var i = tabs.length - 1; i >= 0; i--) {
