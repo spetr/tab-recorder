@@ -34,15 +34,17 @@ function startScreenRecording() {
         active: true,
         currentWindow: true
     }, function (arrayOfTabs) {
-        var activeTabId = arrayOfTabs[0].id; // Select tab used for recording
         var constraints = {
             audio: true,
             video: true,
             videoConstraints: {
                 mandatory: {
                     chromeMediaSource: 'tab',
+                    minWidth: 16,
+                    minHeight: 9,
                     maxWidth: 1920,
-                    maxHeight: 1080
+                    maxHeight: 1080,
+                    maxFrameRate: 25,
                 }
             },
             audioConstraints: {
