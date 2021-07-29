@@ -2,10 +2,6 @@ chrome.storage.sync.set({
     isRecording: 'false' // FALSE
 });
 
-// chrome.browserAction.setIcon({
-//     path: 'images/icon.png'
-// });
-
 let runtimePort;
 
 // Listen external commands (startRecord / stopRecord)
@@ -30,50 +26,6 @@ chrome.runtime.onConnect.addListener(function (port) {
     })
 });
 
-function gotStream(stream) {
-    var options = {
-        type: 'video',
-        disableLogs: false,
-        ignoreMutedMedia: false,
-        audioBitsPerSecond: audioBitsPerSecond,
-        videoBitsPerSecond: videoBitsPerSecond,
-    };
-
-    switch (videoCodec) {
-        case 'VP8':
-            options.mimeType = 'video/webm\;codecs=vp8';
-            break;
-        case 'VP8':
-            options.mimeType = 'video/webm\;codecs=vp9';
-            break;
-        case 'H264':
-            options.mimeType = 'video/webm\;codecs=h264';
-            break;
-        case 'AV1':
-            options.mimeType = 'video/x-matroska;codecs=avc1';
-            break;
-        default:
-            console.log("Unknown video codec");
-            return;
-    }
-
-    recorder = new MediaStreamRecorder(stream, options);
-    recorder.streams = [stream];
-    recorder.record();
-    isRecording = true;
-
-    onRecording();
-
-    addStreamStopListener(recorder.streams[0], function () {
-        stopScreenRecording();
-    });
-
-    initialTime = Date.now()
-    timer = setInterval(checkTime, 100);
-
-    // tell website that recording is started
-    startRecordingCallback();
-}
 
 function startScreenRecording() {
     chrome.tabs.query({
@@ -102,7 +54,44 @@ function startScreenRecording() {
             stream.getTracks().forEach(function (track) {
                 newStream.addTrack(track);
             });
-            gotStream(newStream);
+
+            var options = {
+                type: 'video',
+                disableLogs: false,
+                ignoreMutedMedia: false,
+                audioBitsPerSecond: audioBitsPerSecond,
+                videoBitsPerSecond: videoBitsPerSecond,
+            };
+
+            switch (videoCodec) {
+                case 'VP8':
+                    options.mimeType = 'video/webm\;codecs=vp8';
+                    break;
+                case 'VP8':
+                    options.mimeType = 'video/webm\;codecs=vp9';
+                    break;
+                case 'H264':
+                    options.mimeType = 'video/webm\;codecs=h264';
+                    break;
+                case 'AV1':
+                    options.mimeType = 'video/x-matroska;codecs=avc1';
+                    break;
+                default:
+                    console.log("Unknown video codec");
+                    return;
+            }
+
+            recorder = new MediaStreamRecorder(newStream, options);
+            recorder.streams = [newStream];
+            recorder.record();
+            isRecording = true;
+
+            addStreamStopListener(recorder.streams[0], function () {
+                stopScreenRecording();
+            });
+
+            initialTime = Date.now()
+            timer = setInterval(checkTime, 100);
         });
     });
 }
@@ -119,9 +108,6 @@ function stopScreenRecording() {
 
     chrome.browserAction.setTitle({
         title: 'Record Your Screen, Tab or Camera'
-    });
-    chrome.browserAction.setIcon({
-        path: 'images/icon.png'
     });
 
     recorder.stop(function onStopRecording(blob, ignoreGetSeekableBlob) {
@@ -213,12 +199,6 @@ function stopScreenRecording() {
 
             isRecording = false;
             setBadgeText('');
-            chrome.browserAction.setIcon({
-                path: 'images/icon.png'
-            });
-            // -------------
-
-            stopRecordingCallback(file);
 
             chrome.storage.sync.set({
                 isRecording: 'false',
@@ -320,43 +300,6 @@ function setBadgeText(text) {
     });
 }
 
-
-var images = ['recordRTC-progress-1.png', 'recordRTC-progress-2.png', 'recordRTC-progress-3.png', 'recordRTC-progress-4.png', 'recordRTC-progress-5.png'];
-var imgIndex = 0;
-var reverse = false;
-
-function onRecording() {
-    if (!isRecording) return;
-
-    chrome.browserAction.setIcon({
-        path: 'images/' + images[imgIndex]
-    });
-
-    if (!reverse) {
-        imgIndex++;
-
-        if (imgIndex > images.length - 1) {
-            imgIndex = images.length - 1;
-            reverse = true;
-        }
-    } else {
-        imgIndex--;
-
-        if (imgIndex < 0) {
-            imgIndex = 1;
-            reverse = false;
-        }
-    }
-
-    if (isRecording) {
-        setTimeout(onRecording, 800);
-        return;
-    }
-
-    chrome.browserAction.setIcon({
-        path: 'images/icon.png'
-    });
-}
 
 false && chrome.storage.sync.get('openPreviewPage', function (item) {
     if (item.openPreviewPage !== 'true') return;

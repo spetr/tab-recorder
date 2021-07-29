@@ -7,8 +7,6 @@ var videoBitsPerSecond = 2610000;
 
 var videoCodec = 'H264'; // Default, VP8, VP9, H264, AV1,
 
-var startRecordingCallback = function() {};
-var stopRecordingCallback = function(file) {};
 var openPreviewOnStopRecording = true;
 var openCameraPreviewDuringRecording = true;
 
