@@ -92,7 +92,7 @@ function onGettingFile(f, item) {
 
     var html = 'This file is in your browser cache. Click <a href="' + file.url + '" download="' + file.name + '">here</a> to download.';
     if (item.php && item.youtube) {
-        html = 'Click to download file from <a href="' + item.php + '" target="_blank">Private Server</a> <img src="images/cross-icon.png" class="cross-icon" title="Delete from server"> or <a href="' + item.youtube + '" target="_blank">YouTube</a>';
+        html = 'Click to download file from <a href="' + item.php + '" target="_blank">Private Server</a> <img src="images/delete.png" class="cross-icon" title="Delete from server"> or <a href="' + item.youtube + '" target="_blank">YouTube</a>';
     } else if (item.php) {
         html = 'Click to download file from: <a href="' + item.php + '" target="_blank">' + item.php + '</a> <img src="images/cross-icon.png" class="cross-icon" title="Delete from server">';
     } else if (item.youtube) {
@@ -158,22 +158,6 @@ DiskStorage.GetLastSelectedFile(recentFile, function(file) {
     });
 });
 
-var btnUploadDropDown = document.querySelector('#btn-upload-dropdown');
-document.querySelector('#btn-upload').onclick = function(e) {
-    e.stopPropagation();
-
-    if (!file) {
-        alert('You have no recordings.');
-        return;
-    }
-
-    if (btnUploadDropDown.className === 'visible') {
-        btnUploadDropDown.className = '';
-    } else {
-        btnUploadDropDown.className = 'visible';
-    }
-};
-
 var btnRecordingsListDropDown = document.querySelector('#btn-recordings-list-dropdown');
 document.querySelector('#btn-recordings-list').onclick = function(e) {
     e.stopPropagation();
@@ -194,7 +178,7 @@ document.querySelector('#btn-recordings-list').onclick = function(e) {
 
             list.forEach(function(item) {
                 var div = document.createElement('div');
-                div.innerHTML = '<img src="images/cross-icon.png" class="cross-icon"><img src="images/edit-icon.png" class="edit-icon">' + item.display;
+                div.innerHTML = '<img src="images/delete.png" class="cross-icon"><img src="images/edit.png" class="edit-icon">' + item.display;
                 btnRecordingsListDropDown.appendChild(div);
 
                 div.querySelector('.cross-icon').onclick = function(e) {
@@ -253,10 +237,6 @@ document.querySelector('#btn-recordings-list').onclick = function(e) {
 
                     document.body.onclick();
                 };
-
-                if (file && file.item && file.item.name === item.name) {
-                    div.className = 'btn-upload-dropdown-selected';
-                }
             });
         });
     }
