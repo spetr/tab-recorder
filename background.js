@@ -30,73 +30,68 @@ chrome.runtime.onConnect.addListener(function (port) {
 
 // Start recording (current tab)
 function startScreenRecording() {
-    chrome.tabs.query({
-        active: true,
-        currentWindow: true
-    }, function (arrayOfTabs) {
-        var constraints = {
-            audio: true,
-            video: true,
-            videoConstraints: {
-                mandatory: {
-                    chromeMediaSource: 'tab',
-                    minWidth: 16,
-                    minHeight: 9,
-                    maxWidth: 1920,
-                    maxHeight: 1080,
-                    maxFrameRate: 25,
-                }
-            },
-            audioConstraints: {
-                mandatory: {
-                    echoCancellation: false
-                }
+    var constraints = {
+        audio: true,
+        video: true,
+        audioConstraints: {
+            mandatory: {
+                echoCancellation: false
             }
-        };
-        chrome.tabCapture.capture(constraints, function (stream) {
-            var newStream = new MediaStream();
-            stream.getTracks().forEach(function (track) {
-                newStream.addTrack(track);
-            });
-
-            var options = {
-                type: 'video',
-                disableLogs: false,
-                ignoreMutedMedia: false,
-                audioBitsPerSecond: audioBitsPerSecond,
-                videoBitsPerSecond: videoBitsPerSecond,
-            };
-
-            switch (videoCodec) {
-                case 'VP8':
-                    options.mimeType = 'video/webm\;codecs=vp8';
-                    break;
-                case 'VP9':
-                    options.mimeType = 'video/webm\;codecs=vp9';
-                    break;
-                case 'H264':
-                    options.mimeType = 'video/webm\;codecs=h264';
-                    break;
-                case 'AV1':
-                    options.mimeType = 'video/x-matroska;codecs=avc1';
-                    break;
-                default:
-                    console.log("Unknown video codec");
-                    return;
+        },
+        videoConstraints: {
+            mandatory: {
+                chromeMediaSource: 'tab',
+                minWidth: 16,
+                minHeight: 9,
+                maxWidth: 1920,
+                maxHeight: 1080,
+                maxFrameRate: 25,
             }
-
-            recorder = new MediaStreamRecorder(newStream, options);
-            recorder.streams = [newStream];
-            recorder.record();
-            isRecording = true;
-
-            addStreamStopListener(recorder.streams[0], function () {
-                stopScreenRecording();
-            });
-
-            initialTime = Date.now()
-            timer = setInterval(checkTime, 100);
+        }
+    };
+    chrome.tabCapture.capture(constraints, function (stream) {
+        var newStream = new MediaStream();
+        stream.getTracks().forEach(function (track) {
+            newStream.addTrack(track);
         });
+
+        var options = {
+            type: 'video',
+            disableLogs: false,
+            ignoreMutedMedia: false,
+            audioBitsPerSecond: audioBitsPerSecond,
+            videoBitsPerSecond: videoBitsPerSecond,
+        };
+
+        switch (videoCodec) {
+            case 'VP8':
+                options.mimeType = 'video/webm\;codecs=vp8';
+                break;
+            case 'VP9':
+                options.mimeType = 'video/webm\;codecs=vp9';
+                break;
+            case 'H264':
+                options.mimeType = 'video/webm\;codecs=h264';
+                break;
+            case 'AV1':
+                options.mimeType = 'video/x-matroska;codecs=avc1';
+                break;
+            default:
+                console.log("Unknown video codec");
+                return;
+        }
+
+        recorder = new MediaStreamRecorder(newStream, options);
+        recorder.streams = [newStream];
+        recorder.record();
+        isRecording = true;
+
+        addStreamStopListener(recorder.streams[0], function () {
+            stopScreenRecording();
+        });
+
+        initialTime = Date.now()
+        timer = setInterval(checkTime, 100);
     });
 }
 
