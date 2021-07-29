@@ -110,10 +110,6 @@ function stopScreenRecording() {
     setBadgeText('');
     isRecording = false;
 
-    chrome.browserAction.setTitle({
-        title: 'Record Your Screen, Tab or Camera'
-    });
-
     recorder.stop(function onStopRecording(blob, ignoreGetSeekableBlob) {
         var mimeType = '';
         var fileExtension = '';
@@ -191,10 +187,6 @@ function setVODRecordingBadgeText(text, title) {
     chrome.browserAction.setBadgeText({
         text: text
     });
-
-    chrome.browserAction.setTitle({
-        title: title && title.length ? title + ' duration' : 'Record Screen'
-    });
 }
 
 function msToTime(s) {
@@ -238,10 +230,6 @@ function checkTime() {
     var timeDifference = Date.now() - initialTime;
     var formatted = convertTime(timeDifference);
     setBadgeText(formatted);
-
-    chrome.browserAction.setTitle({
-        title: 'Recording duration: ' + formatted
-    });
 }
 
 function setBadgeText(text) {
