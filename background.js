@@ -100,20 +100,16 @@ function startScreenRecording() {
     });
 }
 
-
 function stopScreenRecording() {
     if (!recorder || !isRecording) return;
-
     if (timer) {
         clearTimeout(timer);
     }
     setBadgeText('');
     isRecording = false;
-
     recorder.stop(function onStopRecording(blob, ignoreGetSeekableBlob) {
         var mimeType = '';
         var fileExtension = '';
-
         switch (videoCodec) {
             case 'VP8':
             case 'VP9':
@@ -132,19 +128,15 @@ function stopScreenRecording() {
                 console.log("Unknown video codec");
                 return;
         }
-
         var file = new File([recorder ? recorder.blob : ''], getFileName(fileExtension), {
             type: mimeType
         });
-
         if (ignoreGetSeekableBlob === true) {
             file = new File([blob], getFileName(fileExtension), {
                 type: mimeType
             });
         }
-
         localStorage.setItem('selected-file', file.name);
-
         DiskStorage.StoreFile(file, function (response) {
             try {
                 videoPlayers.forEach(function (player) {
@@ -152,7 +144,6 @@ function stopScreenRecording() {
                 });
                 videoPlayers = [];
             } catch (e) {}
-
             if (recorder && recorder.streams) {
                 recorder.streams.forEach(function (stream, idx) {
                     stream.getTracks().forEach(function (track) {
@@ -163,63 +154,27 @@ function stopScreenRecording() {
                         stream.onended();
                     }
                 });
-
                 recorder.streams = null;
             }
-
             isRecording = false;
             setBadgeText('');
-
             chrome.storage.sync.set({
                 isRecording: 'false'
             });
-
             openPreviewPage()
         });
     });
-}
-
-function setVODRecordingBadgeText(text, title) {
-    chrome.browserAction.setBadgeBackgroundColor({
-        color: [203, 0, 15, 255]
-    });
-
-    chrome.browserAction.setBadgeText({
-        text: text
-    });
-}
-
-function msToTime(s) {
-    function addZ(n) {
-        return (n < 10 ? '0' : '') + n;
-    }
-
-    var ms = s % 1000;
-    s = (s - ms) / 1000;
-    var secs = s % 60;
-    s = (s - secs) / 60;
-    var mins = s % 60;
-    var hrs = (s - mins) / 60;
-
-    return addZ(hrs) + ':' + addZ(mins) + ':' + addZ(secs) + '.' + ms;
 }
 
 function convertTime(miliseconds) {
     var totalSeconds = Math.floor(miliseconds / 1000);
     var minutes = Math.floor(totalSeconds / 60);
     var seconds = totalSeconds - minutes * 60;
-
     minutes += '';
     seconds += '';
-
-    if (minutes.length === 1) {
-        // minutes = '0' + minutes;
-    }
-
     if (seconds.length === 1) {
         seconds = '0' + seconds;
     }
-
     return minutes + ':' + seconds;
 }
 
@@ -236,12 +191,10 @@ function setBadgeText(text) {
     chrome.browserAction.setBadgeBackgroundColor({
         color: [255, 0, 0, 255]
     });
-
     chrome.browserAction.setBadgeText({
         text: text + ''
     });
 }
-
 
 function openPreviewPage() {
     chrome.storage.sync.set({
