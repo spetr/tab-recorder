@@ -1,3 +1,5 @@
+'use strict';
+
 let runtimePort;
 
 // Listen external commands (startRecord / stopRecord)
