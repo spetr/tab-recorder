@@ -1,0 +1,28 @@
+{
+  "name": "Tab Recorder",
+  "description": "Records selected browser tab",
+  "version": "1.0",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs",
+    "tabCapture",
+    "desktopCapture",
+    "<all_urls>"
+  ],
+  "background": {
+    "scripts": [
+      "MediaStreamRecorder.js",
+      "DiskStorage.js",
+      "background.js",
+      "background.common.js"
+    ],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_title": "Tab Recorder",
+    "default_icon": "images/icon.png",
+    "default_popup": "popup.html"
+  },
+  "manifest_version": 2
+}
