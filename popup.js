@@ -4,29 +4,17 @@ let runtimePort = chrome.runtime.connect({
     name: location.href.replace(/\/|:|#|\?|\$|\^|%|\.|`|~|!|\+|@|\[|\||]|\|*. /g, '').split('\n').join('').split('\r').join('')
 });
 
-runtimePort.onMessage.addListener(function(message) {
+runtimePort.onMessage.addListener(function (message) {
     if (!message) {
         return;
     }
 });
 
-function recordActionNotify(e) {
-    let action = e.target.id;
-    console.log(action);
-
-    chrome.storage.sync.set({
-        isRecording: 'false'
-    }, function() {
-        runtimePort.postMessage({
-            action: action
-        });
-        window.close();
-    });
-}
-
 function click(e) {
-    console.log("Click button:", e.target.id);
-    recordActionNotify(e)
+    runtimePort.postMessage({
+        action: e.target.id
+    });
+    window.close();
 }
 
 document.addEventListener('DOMContentLoaded', function () {

@@ -1,7 +1,3 @@
-chrome.storage.sync.set({
-    isRecording: 'false' // FALSE
-});
-
 let runtimePort;
 
 // Listen external commands (startRecord / stopRecord)
@@ -30,7 +26,7 @@ chrome.runtime.onConnect.addListener(function (port) {
     })
 });
 
-
+// Start recording (current tab)
 function startScreenRecording() {
     chrome.tabs.query({
         active: true,
@@ -100,6 +96,7 @@ function startScreenRecording() {
     });
 }
 
+// Stop recording
 function stopScreenRecording() {
     if (!recorder || !isRecording) return;
     if (timer) {
@@ -158,9 +155,6 @@ function stopScreenRecording() {
             }
             isRecording = false;
             setBadgeText('');
-            chrome.storage.sync.set({
-                isRecording: 'false'
-            });
             openPreviewPage()
         });
     });
@@ -197,26 +191,20 @@ function setBadgeText(text) {
 }
 
 function openPreviewPage() {
-    chrome.storage.sync.set({
-        isRecording: 'false'
-    });
+
     chrome.tabs.query({}, function (tabs) {
-        var found = false;
         var url = 'chrome-extension://' + chrome.runtime.id + '/preview.html';
         for (var i = tabs.length - 1; i >= 0; i--) {
             if (tabs[i].url === url) {
-                found = true;
                 chrome.tabs.update(tabs[i].id, {
                     active: true,
                     url: url
                 });
-                break;
+                return;
             }
         }
-        if (!found) {
-            chrome.tabs.create({
-                url: 'preview.html'
-            });
-        }
+        chrome.tabs.create({
+            url: 'preview.html'
+        });
     });
 };
