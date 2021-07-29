@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
   <title>Tab Recorder</title>
   <style>
@@ -24,22 +25,33 @@
       margin-top: 2px;
       background: #cccccc;
     }
+
     div:hover {
       background: #aaaaaa;
     }
+
     .red-btn {
       border: 5px solid red;
       color: red;
     }
+
     .green-btn {
       border: 5px solid green;
       color: green;
     }
+
+    .grey-btn {
+      border: 5px solid grey;
+      color: grey;
+    }
   </style>
   <script src="popup.js"></script>
 </head>
+
 <body>
-<div id="startRecord" class="green-btn">Start</div>
-<div id="stopRecord" class="red-btn">Stop</div>
+  <div id="startRecord" class="green-btn">Start</div>
+  <div id="stopRecord" class="red-btn">Stop</div>
+  <div id="preview" class="grey-btn">Info</div>
 </body>
+
 </html>

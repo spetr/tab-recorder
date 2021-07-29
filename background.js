@@ -20,6 +20,10 @@ chrome.runtime.onConnect.addListener(function (port) {
                 console.log(`stop record!`)
                 stopScreenRecording();
                 break;
+            case "preview":
+                console.log(`stop record!`)
+                openPreviewPage();
+                break;
             default:
                 console.log(`unknown action ${request.action}`);
         }
