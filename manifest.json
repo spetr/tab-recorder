@@ -12,7 +12,7 @@
   ],
   "background": {
     "scripts": [
-      "RecordRTC.js",
+      "lib/RecordRTC.js",
       "DiskStorage.js",
       "background.js",
       "background.common.js"
