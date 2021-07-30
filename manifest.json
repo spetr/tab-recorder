@@ -12,7 +12,7 @@
   ],
   "background": {
     "scripts": [
-      "MediaStreamRecorder.js",
+      "RecordRTC.js",
       "DiskStorage.js",
       "background.js",
       "background.common.js"
