@@ -11,15 +11,18 @@ chrome.runtime.onConnect.addListener(function (port) {
         }
         switch (message.action) {
             case "startRecord":
-                console.log(`start record!`);
                 startScreenRecording();
                 break;
             case "stopRecord":
-                console.log(`stop record!`)
                 stopScreenRecording();
                 break;
+            case "pauseRecord":
+                pauseScreenRecording();
+                break;
+            case "resumeRecord":
+                resumeScreenRecording();
+                break;
             case "preview":
-                console.log(`stop record!`)
                 openPreviewPage();
                 break;
             default:
@@ -71,10 +74,10 @@ function startScreenRecording() {
                 options.mimeType = 'video/webm\;codecs=vp9';
                 break;
             case 'H264':
-                options.mimeType = 'video/webm\;codecs=h264';
+                options.mimeType = 'video/x-matroska\;codecs=h264';
                 break;
-            case 'AV1':
-                options.mimeType = 'video/x-matroska;codecs=avc1';
+            case 'AVC1':
+                options.mimeType = 'video/x-matroska\;codecs=avc1';
                 break;
             default:
                 console.log("Unknown video codec");
@@ -95,6 +98,16 @@ function startScreenRecording() {
     });
 }
 
+function pauseScreenRecording() {
+    if (!recorder || !isRecording) return;
+    recorder.pause()
+}
+
+function resumeScreenRecording() {
+    if (!recorder || !isRecording) return;
+    recorder.resume()
+}
+
 // Stop recording
 function stopScreenRecording() {
     if (!recorder || !isRecording) return;
@@ -103,7 +116,7 @@ function stopScreenRecording() {
     }
     setBadgeText('');
     isRecording = false;
-    recorder.stop(function onStopRecording(blob, ignoreGetSeekableBlob) {
+    recorder.stop(function onStopRecording(blob) {
         var mimeType = '';
         var fileExtension = '';
         switch (videoCodec) {
@@ -113,11 +126,8 @@ function stopScreenRecording() {
                 fileExtension = 'webm'
                 break;
             case 'H264':
-                mimeType = 'video/mp4';
-                fileExtension = 'mp4';
-                break;
-            case 'AV1':
-                mimeType = 'video/mkv';
+            case 'AVC1':
+                mimeType = 'video/x-matroska';
                 fileExtension = 'mkv';
                 break;
             default:
@@ -127,11 +137,6 @@ function stopScreenRecording() {
         var file = new File([recorder ? recorder.blob : ''], getFileName(fileExtension), {
             type: mimeType
         });
-        if (ignoreGetSeekableBlob === true) {
-            file = new File([blob], getFileName(fileExtension), {
-                type: mimeType
-            });
-        }
         localStorage.setItem('selected-file', file.name);
         DiskStorage.StoreFile(file, function (response) {
             try {

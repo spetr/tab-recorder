@@ -5,7 +5,7 @@ var isRecording = false;
 
 var audioBitsPerSecond = 128000;
 var videoBitsPerSecond = 2610000;
-var videoCodec = 'H264'; // Default, VP8, VP9, H264, AV1,
+var videoCodec = 'H264'; // Default, VP8, VP9, H264, AVC1,
 
 // used by RecordRTC
 var isChrome = true;
